@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.ViewModelProvider
 import com.ablahadablah.user.lifehacktest.R
 import com.ablahadablah.user.lifehacktest.api.Api
 import com.ablahadablah.user.lifehacktest.viewmodel.MainViewModel
@@ -22,13 +23,18 @@ class MainActivity : AppCompatActivity() {
         
         supportFragmentManager
             .beginTransaction()
-            .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+            .setCustomAnimations(
+                android.R.anim.slide_in_left, android.R.anim.slide_out_right,
+                android.R.anim.slide_in_left, android.R.anim.slide_out_right)
             .replace(R.id.mainFragmentContainer, CompaniesListFragment())
             .commit()
         
         viewModel.selectedCompany
             .subscribe({
                 supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(
+                        android.R.anim.slide_in_left, android.R.anim.slide_out_right,
+                        android.R.anim.slide_in_left, android.R.anim.slide_out_right)
                     .replace(R.id.mainFragmentContainer, CompanyInfoFragment(), "info-fragment")
                     .addToBackStack(null)
                     .commit()

@@ -83,21 +83,21 @@ class CompaniesListFragment : Fragment() {
             view.findViewById<AppCompatImageView>(R.id.companyImageView)
         }
 
-        init {
-//            textView.setOnClickListener {
-//                viewModel.setSelectedCityFileName(namesList.getValue(cityName))
-//                startCityDownload(namesList.getValue(cityName))
-//            }
-        }
-
-        var comapanyId: Long = 0
+        var companyId: Long = 0
         var companyName: String = ""
             set(value) {
                 field = value
                 textView.text = field
             }
-        
+
+        init {
+            textView.setOnClickListener {
+                viewModel.selectCompany(companyId)
+            }
+        }
+
         fun init(company: Company) {
+            companyId = company.id
             companyName = company.name
             Glide.with(this@CompaniesListFragment)
                 .load("http://megakohz.bget.ru/test_task/${company.img}")

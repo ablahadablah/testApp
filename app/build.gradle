@@ -20,6 +20,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 
     buildTypes {
         release {
@@ -65,7 +68,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
 
     implementation 'com.android.support:multidex:1.0.3'
-    
+
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
