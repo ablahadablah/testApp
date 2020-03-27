@@ -3,4 +3,11 @@
     
     <string name="select_company_label">Выберите компанию</string>
     <string name="find_on_map_label">Найти на карте</string>
+    
+    <string name="connection_error">Не удалось подключиться к серверу</string>
+    <string name="company_info_download_failure">Не удалось загрузить информацию о компании</string>
+    <string name="company_json_parsing_failure">Ошибка чтения данных о компании</string>
+    <string name="unknown_error">Всё очень плохо</string>
+
+    <string name="companies_info_download_failure">Не удалось загрузить информацию о компаниях</string>
 </resources>

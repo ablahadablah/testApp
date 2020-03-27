@@ -7,20 +7,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.widget.ImageViewCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 import com.ablahadablah.user.lifehacktest.R
+import com.ablahadablah.user.lifehacktest.api.CompaniesEvent
 import com.ablahadablah.user.lifehacktest.api.Company
 import com.ablahadablah.user.lifehacktest.viewmodel.MainViewModel
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
+import com.squareup.moshi.JsonEncodingException
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_companies_list.*
 import java.net.UnknownHostException
 
@@ -54,20 +54,41 @@ class CompaniesListFragment : Fragment() {
 
         viewModel.getAllCompanies()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ companies ->
-                companiesListAdapter.dataSet = companies
-                companiesListAdapter.notifyDataSetChanged()
-            }, { e ->
-                when (e) {
-                    is UnknownHostException -> 
-                        Snackbar.make(view!!, "Cannot connect to the server", Snackbar.LENGTH_LONG)
-                            .show()
-                    else ->
-                        Snackbar.make(view!!, "Unknown error", Snackbar.LENGTH_LONG)
-                            .show()
+            .subscribe({ companiesEvent ->
+                when (companiesEvent) {
+                    is CompaniesEvent.Success -> {
+                        companiesListAdapter.dataSet = companiesEvent.companies
+                        companiesListAdapter.notifyDataSetChanged()
+                    }
+                    is CompaniesEvent.Failure -> {
+                        showErrorMessage(companiesEvent.error)   
+                    }
                 }
+            }, { e ->
+                showErrorMessage(e)
             })
             .let { d -> disposable.add(d) }
+    }
+
+    private fun showErrorMessage(e: Throwable) {
+        val errorMsgId = when (e) {
+            is UnknownHostException -> {
+                R.string.connection_error
+            }
+            is JsonEncodingException -> {
+                R.string.company_json_parsing_failure
+            }
+            else -> {
+                Log.d("MainLog", "Failed to download company info =\\")
+                R.string.company_info_download_failure
+            }
+        }
+
+        Snackbar.make(
+            view!!,
+            errorMsgId,
+            Snackbar.LENGTH_LONG
+        ).show()
     }
 
     override fun onPause() {
